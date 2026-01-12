@@ -11,11 +11,7 @@ import {
 export default function CameraInterface() {
   return (
     <div className="relative h-screen w-full bg-black text-white overflow-hidden flex flex-col">
-      <div className="absolute inset-0 z-0 bg-gray-900">
-        <div className="w-full h-full object-cover opacity-50 flex items-center justify-center">
-          <span className="text-gray-500 text-sm">Camera Feed Preview</span>
-        </div>
-      </div>
+      <div className="absolute inset-0 z-0 bg-gray-900"></div>
 
       <div className="absolute top-0 left-0 right-0 z-10 p-6 flex justify-between items-start bg-gradient-to-b from-black/60 to-transparent pt-10">
         <button className="p-2 rounded-full hover:bg-white/10 transition">
