@@ -37,7 +37,6 @@ export const SettingsModal: React.FC<{
     setCompanyLogo,
   } = useSettings();
 
-  // Update current time
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -50,7 +49,6 @@ export const SettingsModal: React.FC<{
     return () => clearInterval(interval);
   }, []);
 
-  // Get current location
   useEffect(() => {
     if (gpsEnabled && isOpen) {
       if (navigator.geolocation) {
@@ -60,7 +58,6 @@ export const SettingsModal: React.FC<{
             setCurrentLocation({ latitude, longitude });
             setLocationError("");
 
-            // Fetch address details using OpenStreetMap Nominatim
             setLoadingAddress(true);
             fetch(
               `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
@@ -74,11 +71,9 @@ export const SettingsModal: React.FC<{
               .then((data) => {
                 const addr = data.address || {};
 
-                // Logic Mapping tối ưu cho Việt Nam
                 const newAddress = {
                   houseNumber: addr.house_number || addr.housenumber || "",
                   street: addr.road || addr.pedestrian || addr.path || "",
-                  // Phường/Xã
                   ward:
                     addr.suburb ||
                     addr.quarter ||
@@ -86,9 +81,7 @@ export const SettingsModal: React.FC<{
                     addr.village ||
                     addr.hamlet ||
                     "",
-                  // Quận/Huyện: OpenStreetMap thường để huyện ở 'county' hoặc 'town' hoặc 'district'
                   district: addr.district || addr.county || addr.town || "",
-                  // Tỉnh/TP: 'city' hoặc 'state' thường là cấp tỉnh ở VN
                   province: addr.city || addr.state || "",
                   country: addr.country || "",
                   displayName: data.display_name || "",
@@ -141,19 +134,16 @@ export const SettingsModal: React.FC<{
         </div>
 
         <div className="space-y-6">
-          {/* Current Time & Location Info */}
           <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
             <h3 className="text-sm font-medium text-gray-300 mb-4">
               Thông tin hiện tại
             </h3>
 
-            {/* Current Time */}
             <div className="mb-4">
               <p className="text-xs text-gray-400 mb-1">Thời gian hiện tại:</p>
               <p className="text-white font-semibold">{currentTime}</p>
             </div>
 
-            {/* Current Location */}
             <div>
               <p className="text-xs text-gray-400 mb-2">Địa điểm hiện tại:</p>
               {gpsEnabled ? (
@@ -242,7 +232,6 @@ export const SettingsModal: React.FC<{
             </div>
           </div>
 
-          {/* User Name */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Tên người chụp (User Name)
@@ -256,7 +245,6 @@ export const SettingsModal: React.FC<{
             />
           </div>
 
-          {/* Company Logo */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Logo công ty (Company Logo)
@@ -287,7 +275,6 @@ export const SettingsModal: React.FC<{
             </div>
           </div>
 
-          {/* Save Button */}
           <button
             onClick={onClose}
             className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded text-white font-medium transition mt-6"

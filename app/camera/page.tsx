@@ -21,10 +21,8 @@ function CameraContent() {
   } = useCamera();
   const [showSettings, setShowSettings] = useState(false);
 
-  // Get settings from context to pass to capturePhoto
   const { timeFormat, gpsEnabled, userName, companyLogo } = useSettings();
 
-  // Get current location and time from settings modal
   const [currentLocation, setCurrentLocation] = useState<{
     latitude: number;
     longitude: number;
@@ -32,7 +30,6 @@ function CameraContent() {
   const [addressInfo, setAddressInfo] = useState<any>(null);
   const [currentTime, setCurrentTime] = useState<string>("");
 
-  // Fetch location when camera opens
   useEffect(() => {
     if (gpsEnabled && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -40,7 +37,6 @@ function CameraContent() {
         setCurrentLocation({ latitude, longitude });
         setCurrentTime(new Date().toLocaleString("vi-VN"));
 
-        // Fetch address
         fetch(
           `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
           { headers: { "Accept-Language": "vi" } }

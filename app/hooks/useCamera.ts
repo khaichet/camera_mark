@@ -78,7 +78,6 @@ export const useCamera = (): UseCameraReturn => {
         canvasRef.current.height = videoRef.current.videoHeight;
         context.drawImage(videoRef.current, 0, 0);
 
-        // Vẽ watermark nếu có config
         if (config) {
           drawWatermark(canvasRef.current, {
             addressInfo: config.addressInfo || null,

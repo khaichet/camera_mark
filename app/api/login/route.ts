@@ -8,7 +8,6 @@ export async function POST(request: Request) {
 
     const { username, password } = await request.json();
 
-    // Validate input
     if (!username || !password) {
       return NextResponse.json(
         { error: 'Username và mật khẩu là bắt buộc' },
@@ -16,7 +15,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Find user by username
     const user = await User.findOne({ username });
 
     if (!user) {
@@ -26,7 +24,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check password (in production, use bcrypt)
     if (user.password !== password) {
       return NextResponse.json(
         { error: 'Username hoặc mật khẩu không chính xác' },
@@ -34,7 +31,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Login successful
     return NextResponse.json({
       success: true,
       user: {

@@ -4,7 +4,6 @@ import { connectToDatabase } from '@/lib/mongodb';
 import { NextResponse } from 'next/server';
 import User from '@/models/User';
 
-// GET - Lấy danh sách users
 export async function GET() {
   try {
     await connectToDatabase();
@@ -24,14 +23,12 @@ export async function GET() {
   }
 }
 
-// POST - Đăng ký user mới
 export async function POST(request: Request) {
   try {
     await connectToDatabase();
 
     const { username, password, name, email } = await request.json();
 
-    // Validate input
     if (!username || !password) {
       return NextResponse.json(
         { error: 'Username và mật khẩu là bắt buộc' },
@@ -39,7 +36,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return NextResponse.json(
@@ -48,10 +44,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create new user
     const newUser = new User({
       username,
-      password, // In production, hash with bcrypt
+      password,
       name: name || username,
       email: email || '',
     });
@@ -80,7 +75,6 @@ export async function POST(request: Request) {
   }
 }
 
-// PUT - Cập nhật user
 export async function PUT(request: Request) {
   try {
     await connectToDatabase();
@@ -97,7 +91,7 @@ export async function PUT(request: Request) {
     const updateData: any = {};
     if (name) updateData.name = name;
     if (email) updateData.email = email;
-    if (password) updateData.password = password; // In production, hash with bcrypt
+    if (password) updateData.password = password;
 
     const updatedUser = await User.findByIdAndUpdate(id, updateData, { new: true }).select('-password');
 
@@ -122,7 +116,6 @@ export async function PUT(request: Request) {
   }
 }
 
-// DELETE - Xoá user
 export async function DELETE(request: Request) {
   try {
     await connectToDatabase();
