@@ -1,18 +1,25 @@
-import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import { connectToDatabase } from '@/lib/mongodb';
+import { NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    await connectDB();
+    const { db } = await connectToDatabase();
+    
+    const ping = await db.admin().ping();
+    
     return NextResponse.json({
       success: true,
       message: 'Connected to MongoDB successfully',
+      ping: ping,
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Database connection failed',
+        message: 'Failed to connect to MongoDB',
+        error: errorMessage,
       },
       { status: 500 }
     );

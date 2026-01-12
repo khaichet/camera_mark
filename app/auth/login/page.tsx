@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 export default function Login() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    phone: "",
+    username: "",
     password: "",
     rememberMe: false,
   });
@@ -28,7 +28,7 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      if (!formData.phone || !formData.password) {
+      if (!formData.username || !formData.password) {
         throw new Error("Vui lòng nhập đầy đủ thông tin");
       }
 
@@ -36,17 +36,23 @@ export default function Login() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          phone: formData.phone,
+          username: formData.username,
           password: formData.password,
           rememberMe: formData.rememberMe,
         }),
       });
 
       if (!response.ok) {
-        throw new Error("Số điện thoại hoặc mật khẩu không chính xác");
+        const data = await response.json();
+        throw new Error(data.error || "Username hoặc mật khẩu không chính xác");
       }
 
-      router.push("/dashboard");
+      const data = await response.json();
+      if (formData.rememberMe) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
+
+      router.push("/camera");
       router.refresh();
     } catch (err: any) {
       setError(err.message || "Đã xảy ra lỗi, vui lòng thử lại");
@@ -81,15 +87,15 @@ export default function Login() {
             )}
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-1.5">
-                Số điện thoại
+                Tên đăng nhập
               </label>
               <input
-                name="phone"
-                type="tel"
-                value={formData.phone}
+                name="username"
+                type="text"
+                value={formData.username}
                 onChange={handleChange}
-                placeholder="Nhập số điện thoại của bạn"
-                autoComplete="tel"
+                placeholder="Nhập tên đăng nhập của bạn"
+                autoComplete="username"
                 className="w-full px-4 py-2.5 rounded-lg border border-gray-300 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-sm sm:text-base"
                 disabled={isLoading}
               />
