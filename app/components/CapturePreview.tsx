@@ -20,7 +20,7 @@ export const CapturePreview: React.FC<CapturePreviewProps> = ({
           className="max-h-[70vh] max-w-full rounded"
         />
         <img
-          src="/asset/HUPUNA LOGO.png"
+          src="/asset/logo.png"
           alt="Logo"
           className="absolute top-2 right-2 h-12 w-auto"
         />
