@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCamera } from "@/app/hooks/useCamera";
+import { useSettings } from "@/app/context/SettingsContext";
 import { SettingsProvider } from "@/app/context/SettingsContext";
 import { TopBar } from "@/app/components/TopBar";
 import { BottomBar } from "@/app/components/BottomBar";
@@ -19,6 +20,63 @@ function CameraContent() {
     capturePhoto,
   } = useCamera();
   const [showSettings, setShowSettings] = useState(false);
+
+  // Get settings from context to pass to capturePhoto
+  const { timeFormat, gpsEnabled, userName, companyLogo } = useSettings();
+
+  // Get current location and time from settings modal
+  const [currentLocation, setCurrentLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+  const [addressInfo, setAddressInfo] = useState<any>(null);
+  const [currentTime, setCurrentTime] = useState<string>("");
+
+  // Fetch location when camera opens
+  useEffect(() => {
+    if (gpsEnabled && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        setCurrentLocation({ latitude, longitude });
+        setCurrentTime(new Date().toLocaleString("vi-VN"));
+
+        // Fetch address
+        fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
+          { headers: { "Accept-Language": "vi" } }
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            const addr = data.address || {};
+            setAddressInfo({
+              houseNumber: addr.house_number || addr.housenumber || "",
+              street: addr.road || addr.pedestrian || addr.path || "",
+              ward:
+                addr.suburb ||
+                addr.quarter ||
+                addr.neighbourhood ||
+                addr.village ||
+                addr.hamlet ||
+                "",
+              district: addr.district || addr.county || addr.town || "",
+              province: addr.city || addr.state || "",
+              country: addr.country || "",
+            });
+          });
+      });
+    }
+  }, [gpsEnabled]);
+
+  const handleCaptureWithWatermark = () => {
+    capturePhoto({
+      addressInfo,
+      currentLocation,
+      currentTime,
+      userName,
+      companyLogo,
+      timeFormat,
+    });
+  };
 
   const handleSavePhoto = () => {
     console.log("Image saved:", capturedImage);
@@ -40,7 +98,7 @@ function CameraContent() {
 
       <TopBar onSettingsClick={() => setShowSettings(true)} />
 
-      <BottomBar onCaptureClick={capturePhoto} />
+      <BottomBar onCaptureClick={handleCaptureWithWatermark} />
 
       <GridOverlay />
 

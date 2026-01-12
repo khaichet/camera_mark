@@ -16,6 +16,7 @@ export const SettingsModal: React.FC<{
   } | null>(null);
   const [locationError, setLocationError] = useState<string>("");
   const [addressInfo, setAddressInfo] = useState<{
+    houseNumber?: string;
     street?: string;
     ward?: string;
     district?: string;
@@ -72,14 +73,28 @@ export const SettingsModal: React.FC<{
               .then((res) => res.json())
               .then((data) => {
                 const addr = data.address || {};
-                setAddressInfo({
+
+                // Logic Mapping tối ưu cho Việt Nam
+                const newAddress = {
+                  houseNumber: addr.house_number || addr.housenumber || "",
                   street: addr.road || addr.pedestrian || addr.path || "",
-                  ward: addr.suburb || addr.hamlet || "",
-                  district: addr.city || addr.county || "",
-                  province: addr.state || addr.province || "",
+                  // Phường/Xã
+                  ward:
+                    addr.suburb ||
+                    addr.quarter ||
+                    addr.neighbourhood ||
+                    addr.village ||
+                    addr.hamlet ||
+                    "",
+                  // Quận/Huyện: OpenStreetMap thường để huyện ở 'county' hoặc 'town' hoặc 'district'
+                  district: addr.district || addr.county || addr.town || "",
+                  // Tỉnh/TP: 'city' hoặc 'state' thường là cấp tỉnh ở VN
+                  province: addr.city || addr.state || "",
                   country: addr.country || "",
-                  displayName: data.name || data.display_name || "",
-                });
+                  displayName: data.display_name || "",
+                };
+
+                setAddressInfo(newAddress);
                 setLoadingAddress(false);
               })
               .catch((error) => {
@@ -150,6 +165,12 @@ export const SettingsModal: React.FC<{
                       </p>
                     ) : addressInfo ? (
                       <div className="space-y-1 text-sm">
+                        {addressInfo.houseNumber && (
+                          <p>
+                            <span className="text-gray-400">Số nhà: </span>
+                            {addressInfo.houseNumber}
+                          </p>
+                        )}
                         {addressInfo.street && (
                           <p>
                             <span className="text-gray-400">Đường: </span>
@@ -170,7 +191,9 @@ export const SettingsModal: React.FC<{
                         )}
                         {addressInfo.province && (
                           <p>
-                            <span className="text-gray-400">Tỉnh: </span>
+                            <span className="text-gray-400">
+                              Tỉnh/Thành phố:{" "}
+                            </span>
                             {addressInfo.province}
                           </p>
                         )}
