@@ -22,7 +22,7 @@ export const CapturePreview: React.FC<CapturePreviewProps> = ({
         <img
           src="/asset/logo.png"
           alt="Logo"
-          className="absolute top-2 right-2 h-12 w-auto"
+          className="absolute top-2 right-2 h-8 w-auto"
         />
       </div>
       <div className="flex gap-4 mt-6">

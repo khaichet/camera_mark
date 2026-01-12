@@ -203,10 +203,6 @@ export const SettingsModal: React.FC<{
                             {addressInfo.country}
                           </p>
                         )}
-                        <p className="text-gray-400 text-xs pt-2 border-t border-gray-700 mt-2">
-                          Tọa độ: {currentLocation.latitude.toFixed(6)},{" "}
-                          {currentLocation.longitude.toFixed(6)}
-                        </p>
                       </div>
                     ) : (
                       <p className="text-yellow-400 text-sm">
@@ -225,7 +221,6 @@ export const SettingsModal: React.FC<{
             </div>
           </div>
 
-          {/* GPS/Location */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Vị trí (Location/GPS)
