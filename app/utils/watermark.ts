@@ -89,10 +89,6 @@ export const drawWatermark = (
     if (config.addressInfo.province) addressParts.push(config.addressInfo.province);
   }
 
-  if (config.userName) {
-    addressParts.push(`${config.userName}`);
-  }
-
   const fullAddress = addressParts.join(", ");
 
   const baseFontSize = canvas.width * 0.035;
@@ -105,7 +101,13 @@ export const drawWatermark = (
   
   drawWrappedText(ctx, fullAddress, currentX, addressStartY, canvas.width * 0.7, lineHeight);
 
-  currentY = addressStartY - timeFontSize + baseFontSize / 2;
+  let userNameY = addressStartY - lineHeight * 1.5;
+  if (config.userName) {
+    drawWhiteText(ctx, config.userName, currentX, userNameY, baseFontSize);
+    userNameY -= lineHeight;
+  }
+
+  currentY = userNameY - timeFontSize + baseFontSize / 2;
   currentX = padding;
   const timeString = now.toLocaleTimeString("vi-VN", {
     hour: "2-digit",
