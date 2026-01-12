@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useCamera } from "@/app/hooks/useCamera";
 import { useSettings } from "@/app/context/SettingsContext";
+import { useAuth } from "@/app/context/AuthContext";
 import { SettingsProvider } from "@/app/context/SettingsContext";
 import { TopBar } from "@/app/components/TopBar";
 import { BottomBar } from "@/app/components/BottomBar";
@@ -11,6 +13,8 @@ import { SettingsModal } from "@/app/components/SettingsModal";
 import { CapturePreview } from "@/app/components/CapturePreview";
 
 function CameraContent() {
+  const router = useRouter();
+  const { isAuthenticated, isLoading: authLoading, user } = useAuth();
   const {
     videoRef,
     canvasRef,
@@ -21,20 +25,21 @@ function CameraContent() {
   } = useCamera();
   const [showSettings, setShowSettings] = useState(false);
 
-  const { timeFormat, gpsEnabled, userName, companyLogo } = useSettings();
+  const { timeFormat, gpsEnabled, companyLogo } = useSettings();
 
-  const [currentLocation, setCurrentLocation] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
   const [addressInfo, setAddressInfo] = useState<any>(null);
   const [currentTime, setCurrentTime] = useState<string>("");
+
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push("/auth/login");
+    }
+  }, [isAuthenticated, authLoading, router]);
 
   useEffect(() => {
     if (gpsEnabled && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
-        setCurrentLocation({ latitude, longitude });
         setCurrentTime(new Date().toLocaleString("vi-VN"));
 
         fetch(
@@ -66,9 +71,8 @@ function CameraContent() {
   const handleCaptureWithWatermark = () => {
     capturePhoto({
       addressInfo,
-      currentLocation,
       currentTime,
-      userName,
+      userName: user?.name || user?.username || "",
       companyLogo,
       timeFormat,
     });
@@ -77,6 +81,21 @@ function CameraContent() {
   const handleSavePhoto = () => {
     console.log("Image saved:", capturedImage);
   };
+
+  if (authLoading) {
+    return (
+      <div className="relative h-screen w-full bg-black text-white overflow-hidden flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white mx-auto mb-4"></div>
+          <p>Đang tải...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="relative h-screen w-full bg-black text-white overflow-hidden flex flex-col">

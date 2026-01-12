@@ -89,14 +89,8 @@ export const drawWatermark = (
     if (config.addressInfo.province) addressParts.push(config.addressInfo.province);
   }
 
-  if (addressParts.length === 0 && config.currentLocation) {
-    addressParts.push(
-      `${config.currentLocation.latitude.toFixed(6)}, ${config.currentLocation.longitude.toFixed(6)}`
-    );
-  }
-
   if (config.userName) {
-    addressParts.push(`Người chụp: ${config.userName}`);
+    addressParts.push(`${config.userName}`);
   }
 
   const fullAddress = addressParts.join(", ");

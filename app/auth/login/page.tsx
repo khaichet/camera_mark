@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function Login() {
   const router = useRouter();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -48,12 +50,8 @@ export default function Login() {
       }
 
       const data = await response.json();
-      if (formData.rememberMe) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-      }
-
+      login(data.user);
       router.push("/camera");
-      router.refresh();
     } catch (err: any) {
       setError(err.message || "Đã xảy ra lỗi, vui lòng thử lại");
     } finally {

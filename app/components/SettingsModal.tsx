@@ -3,6 +3,7 @@
 import { X } from "lucide-react";
 import { useRef, useState, useEffect } from "react";
 import { useSettings } from "@/app/context/SettingsContext";
+import { useAuth } from "@/app/context/AuthContext";
 
 export const SettingsModal: React.FC<{
   isOpen: boolean;
@@ -31,11 +32,11 @@ export const SettingsModal: React.FC<{
     setTimeFormat,
     gpsEnabled,
     setGpsEnabled,
-    userName,
-    setUserName,
     companyLogo,
     setCompanyLogo,
   } = useSettings();
+
+  const { user } = useAuth();
 
   useEffect(() => {
     const updateTime = () => {
@@ -236,13 +237,9 @@ export const SettingsModal: React.FC<{
             <label className="block text-sm font-medium text-gray-300 mb-2">
               Tên người chụp (User Name)
             </label>
-            <input
-              type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              placeholder="Nhập tên của bạn"
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
-            />
+            <p className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white font-medium">
+              {user?.name || user?.username || "Chưa đăng nhập"}
+            </p>
           </div>
 
           <div>
