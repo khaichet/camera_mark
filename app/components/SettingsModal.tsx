@@ -224,23 +224,6 @@ export const SettingsModal: React.FC<{
               )}
             </div>
           </div>
-          {/* Time Format */}
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Định dạng thời gian (Time Format)
-            </label>
-            <select
-              value={timeFormat}
-              onChange={(e) => setTimeFormat(e.target.value)}
-              className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white focus:outline-none focus:border-blue-500"
-            >
-              <option>DD/MM/YYYY HH:mm</option>
-              <option>MM/DD/YYYY HH:mm</option>
-              <option>YYYY-MM-DD HH:mm</option>
-              <option>DD/MM/YYYY</option>
-              <option>HH:mm:ss</option>
-            </select>
-          </div>
 
           {/* GPS/Location */}
           <div>
