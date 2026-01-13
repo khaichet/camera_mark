@@ -94,7 +94,7 @@ export const drawWatermark = (
   const baseFontSize = canvas.width * 0.035;
   const timeFontSize = baseFontSize * 2.5;
   const dateFontSize = baseFontSize * 0.9;
-  const lineHeight = baseFontSize * 1.1;
+  const lineHeight = baseFontSize * 1.3;
 
   ctx.font = `normal ${baseFontSize}px Arial`;
   const addressStartY = currentY - lineHeight;
@@ -104,10 +104,10 @@ export const drawWatermark = (
   let userNameY = addressStartY - lineHeight * 0.9;
   if (config.userName) {
     drawWhiteText(ctx, config.userName, currentX, userNameY, baseFontSize);
-    userNameY -= lineHeight * 0.9;
+    userNameY -= lineHeight * 0.5;
   }
 
-  currentY = userNameY - timeFontSize + baseFontSize / 2;
+  currentY = userNameY - timeFontSize * 0.8;
   currentX = padding;
   const timeString = now.toLocaleTimeString("vi-VN", {
     hour: "2-digit",
