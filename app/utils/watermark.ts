@@ -104,10 +104,10 @@ export const drawWatermark = (
   let userNameY = addressStartY - lineHeight * 0.9;
   if (config.userName) {
     drawWhiteText(ctx, config.userName, currentX, userNameY, baseFontSize);
-    userNameY -= lineHeight * 0.5;
+    userNameY -= lineHeight * 0.3;
   }
 
-  currentY = userNameY - timeFontSize * 0.8;
+  currentY = userNameY - timeFontSize * 0.6;
   currentX = padding;
   const timeString = now.toLocaleTimeString("vi-VN", {
     hour: "2-digit",
