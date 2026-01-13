@@ -91,7 +91,8 @@ function CameraContent() {
       );
       console.log("Ảnh đã lưu thành công:", result);
 
-      alert(`Lưu ảnh thành công!\nURL: ${result.data.url}`);
+      const imageUrl = result.link || result.url;
+      alert(`Lưu ảnh thành công!`);
 
       setCapturedImage(null);
     } catch (error) {
