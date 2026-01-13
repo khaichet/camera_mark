@@ -11,6 +11,7 @@ import { BottomBar } from "@/app/components/BottomBar";
 import { GridOverlay } from "@/app/components/GridOverlay";
 import { SettingsModal } from "@/app/components/SettingsModal";
 import { CapturePreview } from "@/app/components/CapturePreview";
+import { savePhotoCaptured } from "@/lib/photoUpload";
 
 function CameraContent() {
   const router = useRouter();
@@ -78,8 +79,28 @@ function CameraContent() {
     });
   };
 
-  const handleSavePhoto = () => {
-    console.log("Image saved:", capturedImage);
+  const handleSavePhoto = async () => {
+    if (!capturedImage) return;
+
+    try {
+      const result = await savePhotoCaptured(
+        capturedImage,
+        `photo_${Date.now()}.png`,
+        "camera",
+        user?.id
+      );
+      console.log("Ảnh đã lưu thành công:", result);
+
+      alert(`Lưu ảnh thành công!\nURL: ${result.data.url}`);
+
+      setCapturedImage(null);
+    } catch (error) {
+      console.error("Lỗi lưu ảnh:", error);
+      alert(
+        "Lỗi lưu ảnh: " +
+          (error instanceof Error ? error.message : "Unknown error")
+      );
+    }
   };
 
   if (authLoading) {

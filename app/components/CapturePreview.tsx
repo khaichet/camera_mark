@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
+
 interface CapturePreviewProps {
   image: string;
   onRetake: () => void;
-  onSave: () => void;
+  onSave: () => Promise<void>;
 }
 
 export const CapturePreview: React.FC<CapturePreviewProps> = ({
@@ -11,6 +13,7 @@ export const CapturePreview: React.FC<CapturePreviewProps> = ({
   onRetake,
   onSave,
 }) => {
+  const [isSaving, setIsSaving] = useState(false);
   return (
     <div className="absolute inset-0 z-30 bg-black/90 flex flex-col items-center justify-center">
       <div className="relative">
@@ -28,15 +31,20 @@ export const CapturePreview: React.FC<CapturePreviewProps> = ({
       <div className="flex gap-4 mt-6">
         <button
           onClick={onRetake}
-          className="px-6 py-2 bg-blue-500 hover:bg-blue-600 rounded text-white"
+          disabled={isSaving}
+          className="px-6 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-400 rounded text-white disabled:cursor-not-allowed"
         >
           Chụp lại
         </button>
         <button
-          onClick={onSave}
-          className="px-6 py-2 bg-green-500 hover:bg-green-600 rounded text-white"
+          onClick={() => {
+            setIsSaving(true);
+            onSave().finally(() => setIsSaving(false));
+          }}
+          disabled={isSaving}
+          className="px-6 py-2 bg-green-500 hover:bg-green-600 disabled:bg-green-400 rounded text-white disabled:cursor-not-allowed flex items-center gap-2"
         >
-          Lưu
+          {isSaving ? <>Đang lưu...</> : "Lưu"}
         </button>
       </div>
     </div>
