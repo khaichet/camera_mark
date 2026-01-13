@@ -94,17 +94,17 @@ export const drawWatermark = (
   const baseFontSize = canvas.width * 0.035;
   const timeFontSize = baseFontSize * 2.5;
   const dateFontSize = baseFontSize * 0.9;
-  const lineHeight = baseFontSize * 1.3;
+  const lineHeight = baseFontSize * 1.1;
 
   ctx.font = `normal ${baseFontSize}px Arial`;
   const addressStartY = currentY - lineHeight;
   
   drawWrappedText(ctx, fullAddress, currentX, addressStartY, canvas.width * 0.7, lineHeight);
 
-  let userNameY = addressStartY - lineHeight * 1.5;
+  let userNameY = addressStartY - lineHeight * 0.9;
   if (config.userName) {
     drawWhiteText(ctx, config.userName, currentX, userNameY, baseFontSize);
-    userNameY -= lineHeight;
+    userNameY -= lineHeight * 0.9;
   }
 
   currentY = userNameY - timeFontSize + baseFontSize / 2;
