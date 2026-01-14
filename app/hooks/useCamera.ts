@@ -22,14 +22,18 @@ interface UseCameraReturn {
   isStreaming: boolean;
   capturedImage: string | null;
   setCapturedImage: (image: string | null) => void;
-  capturePhoto: (config?: {
-    addressInfo?: AddressInfo | null;
-    currentLocation?: CurrentLocation | null;
-    currentTime?: string;
-    userName?: string;
-    companyLogo?: string | null;
-    timeFormat?: string;
-  }) => void;
+  capturePhoto: () => void;
+  addWatermarkToImage: (
+    imageData: string,
+    config: {
+      addressInfo?: AddressInfo | null;
+      currentLocation?: CurrentLocation | null;
+      currentTime?: string;
+      userName?: string;
+      companyLogo?: string | null;
+      timeFormat?: string;
+    }
+  ) => Promise<string>;
 }
 
 export const useCamera = (): UseCameraReturn => {
@@ -63,14 +67,7 @@ export const useCamera = (): UseCameraReturn => {
     };
   }, []);
 
-  const capturePhoto = (config?: {
-    addressInfo?: AddressInfo | null;
-    currentLocation?: CurrentLocation | null;
-    currentTime?: string;
-    userName?: string;
-    companyLogo?: string | null;
-    timeFormat?: string;
-  }) => {
+  const capturePhoto = () => {
     if (videoRef.current && canvasRef.current) {
       const context = canvasRef.current.getContext("2d");
       if (context) {
@@ -78,8 +75,33 @@ export const useCamera = (): UseCameraReturn => {
         canvasRef.current.height = videoRef.current.videoHeight;
         context.drawImage(videoRef.current, 0, 0);
 
-        if (config) {
-          drawWatermark(canvasRef.current, {
+        const imageData = canvasRef.current.toDataURL("image/png");
+        setCapturedImage(imageData);
+      }
+    }
+  };
+
+  const addWatermarkToImage = async (
+    imageData: string,
+    config: {
+      addressInfo?: AddressInfo | null;
+      currentLocation?: CurrentLocation | null;
+      currentTime?: string;
+      userName?: string;
+      companyLogo?: string | null;
+      timeFormat?: string;
+    }
+  ): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const tempCanvas = document.createElement("canvas");
+        tempCanvas.width = img.width;
+        tempCanvas.height = img.height;
+        const ctx = tempCanvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0);
+          drawWatermark(tempCanvas, {
             addressInfo: config.addressInfo || null,
             currentLocation: config.currentLocation || null,
             currentTime: config.currentTime || new Date().toLocaleString("vi-VN"),
@@ -87,12 +109,11 @@ export const useCamera = (): UseCameraReturn => {
             companyLogo: config.companyLogo || null,
             timeFormat: config.timeFormat || "DD/MM/YYYY HH:mm",
           });
+          resolve(tempCanvas.toDataURL("image/png"));
         }
-
-        const imageData = canvasRef.current.toDataURL("image/png");
-        setCapturedImage(imageData);
-      }
-    }
+      };
+      img.src = imageData;
+    });
   };
 
   return {
@@ -102,5 +123,6 @@ export const useCamera = (): UseCameraReturn => {
     capturedImage,
     setCapturedImage,
     capturePhoto,
+    addWatermarkToImage,
   };
 };

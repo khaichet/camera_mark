@@ -23,6 +23,7 @@ function CameraContent() {
     capturedImage,
     setCapturedImage,
     capturePhoto,
+    addWatermarkToImage,
   } = useCamera();
   const [showSettings, setShowSettings] = useState(false);
 
@@ -70,21 +71,24 @@ function CameraContent() {
   }, [gpsEnabled]);
 
   const handleCaptureWithWatermark = () => {
-    capturePhoto({
-      addressInfo,
-      currentTime,
-      userName: user?.name || user?.username || "",
-      companyLogo,
-      timeFormat,
-    });
+    capturePhoto();
   };
 
-  const handleSavePhoto = async () => {
-    if (!capturedImage) return;
+  const handleSavePhoto = async (editedImage: string) => {
+    if (!editedImage) return;
 
     try {
+      // Vẽ watermark lên ảnh trước khi lưu
+      const imageWithWatermark = await addWatermarkToImage(editedImage, {
+        addressInfo,
+        currentTime,
+        userName: user?.name || user?.username || "",
+        companyLogo,
+        timeFormat,
+      });
+
       const result = await savePhotoCaptured(
-        capturedImage,
+        imageWithWatermark,
         `photo_${Date.now()}.png`,
         "camera",
         user?.id
@@ -149,6 +153,13 @@ function CameraContent() {
           image={capturedImage}
           onRetake={() => setCapturedImage(null)}
           onSave={handleSavePhoto}
+          watermarkConfig={{
+            addressInfo,
+            currentTime,
+            userName: user?.name || user?.username || "",
+            companyLogo,
+            timeFormat,
+          }}
         />
       )}
     </div>
