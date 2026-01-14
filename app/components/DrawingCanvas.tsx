@@ -41,7 +41,7 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({
   }, [image]);
 
   const getCanvasCoordinates = (
-    e: React.MouseEvent<HTMLCanvasElement>
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>
   ): { x: number; y: number } => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
@@ -50,16 +50,35 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
 
+    let clientX: number, clientY: number;
+
+    if ("touches" in e) {
+      // Touch event
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      // Mouse event
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+
     return {
-      x: (e.clientX - rect.left) * scaleX,
-      y: (e.clientY - rect.top) * scaleY,
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY,
     };
   };
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleDrawStart = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>
+  ) => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!ctx) return;
+
+    // Prevent default touch behavior (scrolling, zooming)
+    if ("touches" in e) {
+      e.preventDefault();
+    }
 
     const pos = getCanvasCoordinates(e);
     setIsDrawing(true);
@@ -73,8 +92,15 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({
     ctx.globalCompositeOperation = "source-over";
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handleDrawMove = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>
+  ) => {
     if (!isDrawing || !canvasRef.current) return;
+
+    // Prevent default touch behavior
+    if ("touches" in e) {
+      e.preventDefault();
+    }
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -85,7 +111,16 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({
     ctx.stroke();
   };
 
-  const handleMouseUp = () => {
+  const handleDrawEnd = (
+    e?:
+      | React.MouseEvent<HTMLCanvasElement>
+      | React.TouchEvent<HTMLCanvasElement>
+  ) => {
+    // Prevent default touch behavior
+    if (e && "touches" in e) {
+      e.preventDefault();
+    }
+
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (ctx) {
@@ -151,15 +186,23 @@ export const DrawingCanvas: React.FC<DrawingCanvasProps> = ({
         <div className="bg-black rounded overflow-hidden mb-4 flex justify-center">
           <canvas
             ref={canvasRef}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            style={{
-              maxWidth: "100%",
-              maxHeight: "500px",
-              cursor: "crosshair",
-            }}
+            onMouseDown={handleDrawStart}
+            onMouseMove={handleDrawMove}
+            onMouseUp={handleDrawEnd}
+            onMouseLeave={handleDrawEnd}
+            onTouchStart={handleDrawStart}
+            onTouchMove={handleDrawMove}
+            onTouchEnd={handleDrawEnd}
+            style={
+              {
+                maxWidth: "100%",
+                maxHeight: "500px",
+                cursor: "crosshair",
+                touchAction: "none",
+                WebkitTouchCallout: "none",
+                WebkitUserSelect: "none",
+              } as React.CSSProperties
+            }
           />
         </div>
 
