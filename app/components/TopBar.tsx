@@ -20,9 +20,6 @@ export const TopBar: React.FC<TopBarProps> = ({ onSettingsClick }) => {
         <div className="p-2 rounded-full bg-black/40 backdrop-blur-md group-hover:bg-yellow-500/20 transition">
           <MapPinned className="w-5 h-5 text-yellow-400" />
         </div>
-        <span className="text-[10px] font-medium opacity-80 shadow-black drop-shadow-md">
-          Location On
-        </span>
       </button>
 
       <button className="p-2 rounded-full hover:bg-white/10 transition">
