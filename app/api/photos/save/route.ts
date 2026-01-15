@@ -1,4 +1,5 @@
 
+import { addRow } from '@/app/lib/mongoDBCRUD';
 import { NextRequest, NextResponse } from 'next/server';
 import PocketBase, { ClientResponseError } from 'pocketbase';
 
@@ -26,6 +27,7 @@ export async function POST(req: NextRequest) {
     const receiver = (formData.get('receiver') as string) || '';
     const batchId = (formData.get('batchId') as string) || undefined;
     const skipSaveMessage = formData.get('skipSaveMessage') === 'true';
+    const userId = (formData.get('userId') as string) || sender;
 
     const pbUrl = process.env.NEXT_PUBLIC_POCKETBASE_URL || 'https://files.hupuna.vn/';
     const identity = process.env.NEXT_PUBLIC_POCKETBASE_USER_ID;
@@ -72,8 +74,32 @@ export async function POST(req: NextRequest) {
     const baseUrl = pbUrl.endsWith('/') ? pbUrl.slice(0, -1) : pbUrl;
     const fullUrl = `${baseUrl}/api/files/${record.collectionId}/${record.id}/${record.file}`;
 
-
     let insertedId: string | undefined = undefined;
+
+    if (!skipSaveMessage) {
+      try {
+        const now = new Date();
+        const hupunaDateTime = [
+          String(now.getDate()).padStart(2, '0'),
+          String(now.getMonth() + 1).padStart(2, '0'),
+          now.getFullYear(),
+        ].join('/') + ' ' + [
+          String(now.getHours()).padStart(2, '0'),
+          String(now.getMinutes()).padStart(2, '0'),
+          String(now.getSeconds()).padStart(2, '0'),
+        ].join(':');
+        
+        const photoData = {
+          userId,
+          fileName: record.file,
+          fileUrl: fullUrl,
+          createdAt: hupunaDateTime,
+        };
+        insertedId = await addRow('photos', photoData);
+      } catch (e) {
+        console.error('Lỗi lưu DB:', e);
+      }
+    }
 
 
 
