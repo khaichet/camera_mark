@@ -79,6 +79,7 @@ export async function POST(req: NextRequest) {
     if (!skipSaveMessage) {
       try {
         const now = new Date();
+        const timestamp = now.getTime();
         const hupunaDateTime = [
           String(now.getDate()).padStart(2, '0'),
           String(now.getMonth() + 1).padStart(2, '0'),
@@ -94,6 +95,7 @@ export async function POST(req: NextRequest) {
           fileName: record.file,
           fileUrl: fullUrl,
           createdAt: hupunaDateTime,
+          timestamp,
         };
         insertedId = await addRow('photos', photoData);
       } catch (e) {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 
 interface Photo {
@@ -18,6 +18,7 @@ const AlbumPhoto = () => {
   const { user } = useAuth();
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
 
   useEffect(() => {
     if (user?.id) {
@@ -65,11 +66,12 @@ const AlbumPhoto = () => {
           <p className="text-gray-400 text-lg">Chưa có ảnh nào</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-5 md:grid-cols-5 lg:grid-cols-6 gap-2">
           {photos.map((photo) => (
             <div
               key={photo._id}
-              className="relative group rounded-lg overflow-hidden bg-gray-900"
+              className="relative group rounded-lg overflow-hidden bg-gray-900 cursor-pointer"
+              onClick={() => setSelectedPhoto(photo)}
             >
               <img
                 src={photo.fileUrl}
@@ -84,6 +86,29 @@ const AlbumPhoto = () => {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {selectedPhoto && (
+        <div className="fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-center p-4">
+          <button
+            onClick={() => setSelectedPhoto(null)}
+            className="absolute top-4 right-4 p-2 hover:bg-gray-800 rounded-lg transition z-10"
+          >
+            <X size={28} className="text-white" />
+          </button>
+
+          <div className="relative flex flex-col items-center gap-3">
+            <img
+              src={selectedPhoto.fileUrl}
+              alt={selectedPhoto.fileName}
+              className="max-w-[80vw] max-h-[75vh] object-contain rounded-lg"
+            />
+            <div className="text-white text-center">
+              <p className="text-sm font-medium">{selectedPhoto.fileName}</p>
+              <p className="text-xs text-gray-400">{selectedPhoto.createdAt}</p>
+            </div>
+          </div>
         </div>
       )}
     </div>

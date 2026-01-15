@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     const result = await getAllRows('photos', {
       field: 'userId',
       value: userId,
-      sort: { field: 'createdAt', order: 'desc' },
+      sort: { field: 'timestamp', order: 'desc' },
     });
 
     return NextResponse.json({
