@@ -2,10 +2,20 @@
 
 import { useRouter } from "next/navigation";
 import { Camera, Image, Stamp } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/app/context/AuthContext";
 
 interface BottomBarProps {
   onCaptureClick: () => void;
   capturedPhotos?: string[];
+}
+
+interface Photo {
+  _id: string;
+  fileUrl: string;
+  fileName: string;
+  userId: string;
+  createdAt: string;
 }
 
 export const BottomBar: React.FC<BottomBarProps> = ({
@@ -13,6 +23,26 @@ export const BottomBar: React.FC<BottomBarProps> = ({
   capturedPhotos = [],
 }) => {
   const router = useRouter();
+  const { user } = useAuth();
+  const [latestPhoto, setLatestPhoto] = useState<Photo | null>(null);
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchLatestPhoto();
+    }
+  }, [user?.id]);
+
+  const fetchLatestPhoto = async () => {
+    try {
+      const response = await fetch(`/api/photos/list?userId=${user?.id}`);
+      const result = await response.json();
+      if (result.success && result.data && result.data.length > 0) {
+        setLatestPhoto(result.data[0]); // Ảnh đầu tiên là ảnh mới nhất
+      }
+    } catch (error) {
+      console.error("Lỗi lấy ảnh gần nhất:", error);
+    }
+  };
 
   return (
     <div className="absolute bottom-0 left-0 right-0 z-20 pb-10 pt-20 px-8 flex justify-between items-center bg-gradient-to-t from-black/80 via-black/40 to-transparent">
@@ -21,7 +51,15 @@ export const BottomBar: React.FC<BottomBarProps> = ({
         onClick={() => router.push("/camera/photos")}
       >
         <div className="w-12 h-12 rounded-lg bg-gray-800 border-2 border-white/20 overflow-hidden group-hover:border-white transition flex items-center justify-center backdrop-blur-sm">
-          <Image className="w-6 h-6 text-gray-300" />
+          {latestPhoto ? (
+            <img
+              src={latestPhoto.fileUrl}
+              alt="Latest"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <Image className="w-6 h-6 text-gray-300" />
+          )}
         </div>
       </button>
 
