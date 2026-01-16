@@ -45,7 +45,7 @@ export const BottomBar: React.FC<BottomBarProps> = ({
   };
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 z-20 pb-10 pt-20 px-8 flex justify-between items-center bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+    <div className="absolute bottom-0 left-0 right-0 z-20 pb-24 pt-20 px-8 flex justify-between items-center bg-gradient-to-t from-black/80 via-black/40 to-transparent">
       <button
         className="group flex flex-col items-center gap-2"
         onClick={() => router.push("/camera/photos")}
