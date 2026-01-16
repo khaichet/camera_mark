@@ -94,14 +94,14 @@ export const useCamera = (): UseCameraReturn => {
   ): Promise<string> => {
     return new Promise((resolve) => {
       const img = new Image();
-      img.onload = () => {
+      img.onload = async () => {
         const tempCanvas = document.createElement("canvas");
         tempCanvas.width = img.width;
         tempCanvas.height = img.height;
         const ctx = tempCanvas.getContext("2d");
         if (ctx) {
           ctx.drawImage(img, 0, 0);
-          drawWatermark(tempCanvas, {
+          await drawWatermark(tempCanvas, {
             addressInfo: config.addressInfo || null,
             currentLocation: config.currentLocation || null,
             currentTime: config.currentTime || new Date().toLocaleString("vi-VN"),

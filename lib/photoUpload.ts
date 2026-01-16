@@ -11,6 +11,11 @@ export async function dataUrlToFile(dataUrl: string, fileName: string): Promise<
 }
 
 /**
+ * Import hàm vẽ logo
+ */
+import { addLogoToImage } from './addLogoToImage';
+
+/**
  * Upload ảnh lên server (PocketBase)
  * @param file - File object
  * @param folder - Folder trên PocketBase (default: "camera")
@@ -49,7 +54,9 @@ export async function uploadPhotoToServer(
     throw error;
   }
 }
+
 /**
+ * Lưu ảnh đã chụp lên PocketBase với logo Hupuna
  * @param capturedImage - Base64 string hoặc data URL từ canvas
  * @param fileName - Tên file (default: "photo.png")
  * @param folder - Folder trên PocketBase
@@ -63,7 +70,10 @@ export async function savePhotoCaptured(
   userId?: string
 ) {
   try {
-    const file = await dataUrlToFile(capturedImage, fileName);
+    // Thêm logo Hupuna vào ảnh
+    const imageWithLogo = await addLogoToImage(capturedImage);
+    
+    const file = await dataUrlToFile(imageWithLogo, fileName);
 
     const result = await uploadPhotoToServer(file, folder, userId);
 

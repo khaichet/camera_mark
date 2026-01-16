@@ -78,17 +78,10 @@ function CameraContent() {
     if (!editedImage) return;
 
     try {
-      // Vẽ watermark lên ảnh trước khi lưu
-      const imageWithWatermark = await addWatermarkToImage(editedImage, {
-        addressInfo,
-        currentTime,
-        userName: user?.name || user?.username || "",
-        companyLogo,
-        timeFormat,
-      });
-
+      // editedImage đã có watermark từ CapturePreview.tsx rồi
+      // Không cần vẽ watermark lần nữa!
       const result = await savePhotoCaptured(
-        imageWithWatermark,
+        editedImage,
         `photo_${Date.now()}.png`,
         "camera",
         user?.id

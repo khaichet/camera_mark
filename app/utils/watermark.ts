@@ -71,9 +71,13 @@ const drawWrappedText = (
 export const drawWatermark = (
   canvas: HTMLCanvasElement,
   config: WatermarkConfig
-) => {
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return;
+): Promise<void> => {
+  return new Promise((resolve) => {
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      resolve();
+      return;
+    }
 
   const now = new Date();
   const padding = canvas.width * 0.04;
@@ -161,7 +165,14 @@ export const drawWatermark = (
       const logoY = 20;
 
       ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
+      resolve();
+    };
+    logoImg.onerror = () => {
+      resolve();
     };
     logoImg.src = config.companyLogo;
+  } else {
+    resolve();
   }
+  });
 };

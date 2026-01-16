@@ -34,14 +34,14 @@ export const CapturePreview: React.FC<CapturePreviewProps> = ({
   useEffect(() => {
     // Vẽ watermark lên canvas để preview
     const img = new Image();
-    img.onload = () => {
+    img.onload = async () => {
       const canvas = document.createElement("canvas");
       canvas.width = img.width;
       canvas.height = img.height;
       const ctx = canvas.getContext("2d");
       if (ctx && watermarkConfig) {
         ctx.drawImage(img, 0, 0);
-        drawWatermark(canvas, {
+        await drawWatermark(canvas, {
           addressInfo: watermarkConfig.addressInfo,
           currentLocation: null,
           currentTime: watermarkConfig.currentTime,
@@ -102,7 +102,7 @@ export const CapturePreview: React.FC<CapturePreviewProps> = ({
         <button
           onClick={() => {
             setIsSaving(true);
-            onSave(editedImage).finally(() => setIsSaving(false));
+            onSave(previewWithWatermark).finally(() => setIsSaving(false));
           }}
           disabled={isSaving}
           className="px-6 py-2 bg-green-500 hover:bg-green-600 disabled:bg-green-400 rounded text-white disabled:cursor-not-allowed flex items-center gap-2"
