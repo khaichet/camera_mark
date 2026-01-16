@@ -37,10 +37,10 @@ export const BottomBar: React.FC<BottomBarProps> = ({
       const response = await fetch(`/api/photos/list?userId=${user?.id}`);
       const result = await response.json();
       if (result.success && result.data && result.data.length > 0) {
-        setLatestPhoto(result.data[0]); // Ảnh đầu tiên là ảnh mới nhất
+        setLatestPhoto(result.data[0]);
       }
     } catch (error) {
-      console.error("Lỗi lấy ảnh gần nhất:", error);
+      console.error(error);
     }
   };
 
