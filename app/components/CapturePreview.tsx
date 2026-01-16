@@ -32,7 +32,6 @@ export const CapturePreview: React.FC<CapturePreviewProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    // Vẽ watermark lên canvas để preview
     const img = new Image();
     img.onload = async () => {
       const canvas = document.createElement("canvas");

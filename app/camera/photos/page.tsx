@@ -45,7 +45,6 @@ const AlbumPhoto = () => {
 
   return (
     <div className="min-h-screen bg-black p-4">
-      {/* Header */}
       <div className="flex items-center gap-4 mb-6 pt-4">
         <button
           onClick={() => router.back()}
@@ -56,7 +55,6 @@ const AlbumPhoto = () => {
         <h1 className="text-white text-2xl font-bold">Thư viện ảnh</h1>
       </div>
 
-      {/* Photos Grid */}
       {isLoading ? (
         <div className="flex items-center justify-center min-h-[60vh]">
           <p className="text-gray-400 text-lg">Đang tải ảnh...</p>

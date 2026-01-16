@@ -78,8 +78,6 @@ function CameraContent() {
     if (!editedImage) return;
 
     try {
-      // editedImage đã có watermark từ CapturePreview.tsx rồi
-      // Không cần vẽ watermark lần nữa!
       const result = await savePhotoCaptured(
         editedImage,
         `photo_${Date.now()}.png`,

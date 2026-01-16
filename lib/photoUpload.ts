@@ -13,7 +13,7 @@ export async function dataUrlToFile(dataUrl: string, fileName: string): Promise<
 /**
  * Import hàm vẽ logo
  */
-import { addLogoToImage } from './addLogoToImage';
+import { addLogoToImage, compressImage } from './addLogoToImage';
 
 /**
  * Upload ảnh lên server (PocketBase)
@@ -70,7 +70,6 @@ export async function savePhotoCaptured(
   userId?: string
 ) {
   try {
-    // Thêm logo Hupuna vào ảnh
     const imageWithLogo = await addLogoToImage(capturedImage);
     
     const file = await dataUrlToFile(imageWithLogo, fileName);
@@ -79,7 +78,7 @@ export async function savePhotoCaptured(
 
     return result;
   } catch (error) {
-    console.error('Save photo error:', error);
+    console.error(error);
     throw error;
   }
 }

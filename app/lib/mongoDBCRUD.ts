@@ -1,6 +1,5 @@
 import { connectToDatabase } from "./mongodb";
 
-// ========== CREATE ==========
 export const addRow = async <T extends Record<string, unknown>>(
   collectionName: string,
   newData: T,
@@ -10,7 +9,6 @@ export const addRow = async <T extends Record<string, unknown>>(
   return result.insertedId.toString();
 };
 
-// ========== READ ==========
 export const getAllRows = async <T extends Record<string, unknown>>(
   collectionName: string,
   {
