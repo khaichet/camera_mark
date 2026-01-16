@@ -88,25 +88,26 @@ const AlbumPhoto = () => {
       )}
 
       {selectedPhoto && (
-        <div className="fixed inset-0 z-50 bg-black/95 flex flex-col items-center justify-center p-4">
-          <button
-            onClick={() => setSelectedPhoto(null)}
-            className="absolute top-4 right-4 p-2 hover:bg-gray-800 rounded-lg transition z-10"
-          >
-            <X size={28} className="text-white" />
-          </button>
+        <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center">
+          <img
+            src={selectedPhoto.fileUrl}
+            alt={selectedPhoto.fileName}
+            className="w-full h-full object-contain"
+          />
 
-          <div className="relative flex flex-col items-center gap-3">
-            <img
-              src={selectedPhoto.fileUrl}
-              alt={selectedPhoto.fileName}
-              className="max-w-[80vw] max-h-[75vh] object-contain rounded-lg"
-            />
-            <div className="text-white text-center">
+          <div className="absolute top-4 left-4 right-4 flex items-center justify-between text-white">
+            <div>
               <p className="text-sm font-medium">{selectedPhoto.fileName}</p>
-              <p className="text-xs text-gray-400">{selectedPhoto.createdAt}</p>
+              <p className="text-xs text-gray-300">{selectedPhoto.createdAt}</p>
             </div>
           </div>
+
+          <button
+            onClick={() => setSelectedPhoto(null)}
+            className="absolute top-4 right-4 p-2 bg-black/50 hover:bg-black/80 rounded-lg transition z-10"
+          >
+            <X size={30} className="text-white" />
+          </button>
         </div>
       )}
     </div>
