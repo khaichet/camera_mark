@@ -46,7 +46,7 @@ function CameraContent() {
 
         fetch(
           `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`,
-          { headers: { "Accept-Language": "vi" } }
+          { headers: { "Accept-Language": "vi" } },
         )
           .then((res) => res.json())
           .then((data) => {
@@ -82,7 +82,7 @@ function CameraContent() {
         editedImage,
         `photo_${Date.now()}.png`,
         "camera",
-        user?.id
+        user?.id,
       );
       console.log("Ảnh đã lưu thành công:", result);
 
@@ -94,7 +94,7 @@ function CameraContent() {
       console.error("Lỗi lưu ảnh:", error);
       alert(
         "Lỗi lưu ảnh: " +
-          (error instanceof Error ? error.message : "Unknown error")
+          (error instanceof Error ? error.message : "Unknown error"),
       );
     }
   };
@@ -121,6 +121,7 @@ function CameraContent() {
         autoPlay
         playsInline
         className="absolute inset-0 w-full h-full object-cover z-0"
+        style={{ transform: "scaleX(-1)" }}
       />
       <canvas ref={canvasRef} className="hidden" />
       <div
