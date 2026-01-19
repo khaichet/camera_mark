@@ -128,6 +128,7 @@ function CameraContent() {
         ref={videoRef}
         autoPlay
         playsInline
+        muted
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
       <canvas ref={canvasRef} className="hidden" />

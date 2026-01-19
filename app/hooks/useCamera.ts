@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { drawWatermark } from "@/app/utils/watermark";
 
 interface AddressInfo {
@@ -39,33 +39,70 @@ interface UseCameraReturn {
 export const useCamera = (): UseCameraReturn => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   const [isStreaming, setIsStreaming] = useState(false);
-  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [capturedImage, setCapturedImageState] = useState<string | null>(null);
+
+  const startCamera = useCallback(async () => {
+    try {
+      // Stop existing stream first
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" },
+      });
+      
+      streamRef.current = stream;
+      
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        // Đảm bảo video play trên Safari
+        try {
+          await videoRef.current.play();
+        } catch (playError) {
+          console.log("Auto-play handled by autoPlay attribute");
+        }
+        setIsStreaming(true);
+      }
+    } catch (error) {
+      console.error("Error accessing camera:", error);
+    }
+  }, []);
+
+  const stopCamera = useCallback(() => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    setIsStreaming(false);
+  }, []);
+
+  // Custom setCapturedImage để xử lý camera stream
+  const setCapturedImage = useCallback((image: string | null) => {
+    setCapturedImageState(image);
+    
+    // Khi đóng preview (image = null), restart camera stream
+    if (image === null) {
+      // Delay một chút để đảm bảo DOM đã sẵn sàng
+      setTimeout(() => {
+        startCamera();
+      }, 100);
+    }
+  }, [startCamera]);
 
   useEffect(() => {
-    const startCamera = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "environment" },
-        });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          setIsStreaming(true);
-        }
-      } catch (error) {
-        console.error("Error accessing camera:", error);
-      }
-    };
-
     startCamera();
 
     return () => {
-      if (videoRef.current?.srcObject) {
-        const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
-        tracks.forEach((track) => track.stop());
-      }
+      stopCamera();
     };
-  }, []);
+  }, [startCamera, stopCamera]);
 
   const capturePhoto = () => {
     if (videoRef.current && canvasRef.current) {
@@ -76,7 +113,7 @@ export const useCamera = (): UseCameraReturn => {
         context.drawImage(videoRef.current, 0, 0);
 
         const imageData = canvasRef.current.toDataURL("image/png");
-        setCapturedImage(imageData);
+        setCapturedImageState(imageData);
       }
     }
   };
