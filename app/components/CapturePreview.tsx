@@ -62,7 +62,6 @@ export const CapturePreview: React.FC<CapturePreviewProps> = ({
             currentLocation: null,
             currentTime: config.currentTime,
             userName: config.userName,
-            companyLogo: config.companyLogo,
             timeFormat: config.timeFormat,
           });
           setPreviewWithWatermark(canvas.toDataURL("image/png"));

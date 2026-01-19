@@ -82,9 +82,8 @@ function CameraContent() {
     capturePhoto();
   };
 
-  const handleLogout = () => {
-    logout();
-    router.push("/auth/login");
+  const handleBack = () => {
+    router.back();
   };
 
   const handleSavePhoto = async (editedImage: string) => {
@@ -144,7 +143,7 @@ function CameraContent() {
 
       <TopBar
         onSettingsClick={() => setShowSettings(true)}
-        onLogoutClick={handleLogout}
+        onLogoutClick={handleBack}
       />
 
       <BottomBar onCaptureClick={handleCaptureWithWatermark} />

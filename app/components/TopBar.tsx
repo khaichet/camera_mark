@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings, MapPinned, LogOut } from "lucide-react";
+import { Settings, MapPinned, Undo2 } from "lucide-react";
 
 interface TopBarProps {
   onSettingsClick: () => void;
@@ -29,9 +29,9 @@ export const TopBar: React.FC<TopBarProps> = ({
       <button
         onClick={onLogoutClick}
         className="p-2 rounded-full hover:bg-white/10 transition"
-        title="Logout"
+        title="Quay lại"
       >
-        <LogOut className="w-6 h-6 text-white" />
+        <Undo2 className="w-6 h-6 text-white" />
       </button>
     </div>
   );

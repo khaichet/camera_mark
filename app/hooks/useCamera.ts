@@ -143,7 +143,6 @@ export const useCamera = (): UseCameraReturn => {
             currentLocation: config.currentLocation || null,
             currentTime: config.currentTime || new Date().toLocaleString("vi-VN"),
             userName: config.userName || "",
-            companyLogo: config.companyLogo || null,
             timeFormat: config.timeFormat || "DD/MM/YYYY HH:mm",
           });
           resolve(tempCanvas.toDataURL("image/png"));
