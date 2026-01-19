@@ -1,6 +1,7 @@
 "use client";
 
 import { Settings, MapPinned, Undo2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface TopBarProps {
   onSettingsClick: () => void;
@@ -11,6 +12,12 @@ export const TopBar: React.FC<TopBarProps> = ({
   onSettingsClick,
   onLogoutClick,
 }) => {
+  const router = useRouter();
+
+  const handleBackToHome = () => {
+    router.push("/");
+  };
+
   return (
     <div className="absolute top-0 left-0 right-0 z-10 p-6 flex justify-between items-start bg-gradient-to-b from-black/60 to-transparent pt-10">
       <button
@@ -27,9 +34,9 @@ export const TopBar: React.FC<TopBarProps> = ({
       </button>
 
       <button
-        onClick={onLogoutClick}
+        onClick={handleBackToHome}
         className="p-2 rounded-full hover:bg-white/10 transition"
-        title="Quay lại"
+        title="Về trang chủ"
       >
         <Undo2 className="w-6 h-6 text-white" />
       </button>

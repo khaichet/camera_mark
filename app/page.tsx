@@ -109,7 +109,9 @@ export default function Home() {
 
       {/* Features */}
       <div className="flex-1 px-3 sm:px-6 py-2">
-        <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-slate-800">Tính năng</h2>
+        <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-slate-800">
+          Tính năng
+        </h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
           <FeatureCard
             icon={<Camera className="w-5 h-5" />}
