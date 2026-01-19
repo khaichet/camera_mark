@@ -38,15 +38,23 @@ export const CapturePreview: React.FC<CapturePreviewProps> = ({
       canvas.width = img.width;
       canvas.height = img.height;
       const ctx = canvas.getContext("2d");
-      if (ctx && watermarkConfig) {
+      if (ctx) {
         ctx.drawImage(img, 0, 0);
+        // Use default config if watermarkConfig is not provided
+        const config = watermarkConfig || {
+          addressInfo: null,
+          currentTime: new Date().toLocaleString("vi-VN"),
+          userName: "",
+          companyLogo: null,
+          timeFormat: "DD/MM/YYYY HH:mm",
+        };
         await drawWatermark(canvas, {
-          addressInfo: watermarkConfig.addressInfo,
+          addressInfo: config.addressInfo,
           currentLocation: null,
-          currentTime: watermarkConfig.currentTime,
-          userName: watermarkConfig.userName,
-          companyLogo: watermarkConfig.companyLogo,
-          timeFormat: watermarkConfig.timeFormat,
+          currentTime: config.currentTime,
+          userName: config.userName,
+          companyLogo: config.companyLogo,
+          timeFormat: config.timeFormat,
         });
         setPreviewWithWatermark(canvas.toDataURL("image/png"));
       }

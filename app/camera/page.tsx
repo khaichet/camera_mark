@@ -39,6 +39,14 @@ function CameraContent() {
   }, [isAuthenticated, authLoading, router]);
 
   useEffect(() => {
+    const timeInterval = setInterval(() => {
+      setCurrentTime(new Date().toLocaleString("vi-VN"));
+    }, 1000);
+
+    return () => clearInterval(timeInterval);
+  }, []);
+
+  useEffect(() => {
     if (gpsEnabled && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
@@ -121,7 +129,6 @@ function CameraContent() {
         autoPlay
         playsInline
         className="absolute inset-0 w-full h-full object-cover z-0"
-        style={{ transform: "scaleX(-1)" }}
       />
       <canvas ref={canvasRef} className="hidden" />
       <div

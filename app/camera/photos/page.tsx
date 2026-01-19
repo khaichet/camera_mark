@@ -18,6 +18,7 @@ const AlbumPhoto = () => {
   const { user } = useAuth();
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
 
   useEffect(() => {
@@ -30,14 +31,23 @@ const AlbumPhoto = () => {
     if (!user?.id) return;
 
     setIsLoading(true);
+    setError(null);
     try {
       const response = await fetch(`/api/photos/list?userId=${user.id}`);
       const result = await response.json();
       if (result.success) {
         setPhotos(result.data || []);
+        setError(null);
+      } else {
+        setError(result.message || "Không thể lấy danh sách ảnh");
+        setPhotos([]);
       }
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Lỗi không xác định";
       console.error("Lỗi lấy danh sách ảnh:", error);
+      setError("Lỗi kết nối: " + errorMessage);
+      setPhotos([]);
     } finally {
       setIsLoading(false);
     }
@@ -58,6 +68,18 @@ const AlbumPhoto = () => {
       {isLoading ? (
         <div className="flex items-center justify-center min-h-[60vh]">
           <p className="text-gray-400 text-lg">Đang tải ảnh...</p>
+        </div>
+      ) : error ? (
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-center">
+            <p className="text-red-400 text-lg mb-4">{error}</p>
+            <button
+              onClick={fetchPhotos}
+              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded text-white transition"
+            >
+              Thử lại
+            </button>
+          </div>
         </div>
       ) : photos.length === 0 ? (
         <div className="flex items-center justify-center min-h-[60vh]">
