@@ -3,13 +3,14 @@
 import { useState, useEffect, useRef } from "react";
 import { ImageEditor } from "./ImageEditor";
 import { drawWatermark } from "@/app/utils/watermark";
+import { WatermarkStyle } from "./WatermarkTemplates";
 
 interface WatermarkConfig {
   addressInfo: any;
   currentTime: string;
   userName?: string;
-  companyLogo?: string | null;
   timeFormat: string;
+  style?: WatermarkStyle;
 }
 
 interface CapturePreviewProps {
@@ -54,7 +55,6 @@ export const CapturePreview: React.FC<CapturePreviewProps> = ({
             addressInfo: null,
             currentTime: new Date().toLocaleString("vi-VN"),
             userName: "",
-            companyLogo: null,
             timeFormat: "DD/MM/YYYY HH:mm",
           };
           await drawWatermark(canvas, {
@@ -62,8 +62,8 @@ export const CapturePreview: React.FC<CapturePreviewProps> = ({
             currentLocation: null,
             currentTime: config.currentTime,
             userName: config.userName,
-            companyLogo: config.companyLogo,
             timeFormat: config.timeFormat,
+            style: config.style,
           });
           setPreviewWithWatermark(canvas.toDataURL("image/png"));
         }

@@ -5,12 +5,10 @@ interface SettingsContextType {
   setTimeFormat: (format: string) => void;
   gpsEnabled: boolean;
   setGpsEnabled: (enabled: boolean) => void;
-  companyLogo: string | null;
-  setCompanyLogo: (logo: string | null) => void;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const SettingsProvider: React.FC<{ children: ReactNode }> = ({
@@ -18,7 +16,6 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [timeFormat, setTimeFormat] = useState("DD/MM/YYYY HH:mm");
   const [gpsEnabled, setGpsEnabled] = useState(true);
-  const [companyLogo, setCompanyLogo] = useState<string | null>(null);
 
   return (
     <SettingsContext.Provider
@@ -27,8 +24,6 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({
         setTimeFormat,
         gpsEnabled,
         setGpsEnabled,
-        companyLogo,
-        setCompanyLogo,
       }}
     >
       {children}

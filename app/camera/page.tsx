@@ -12,6 +12,10 @@ import { GridOverlay } from "@/app/components/GridOverlay";
 import { SettingsModal } from "@/app/components/SettingsModal";
 import { CapturePreview } from "@/app/components/CapturePreview";
 import { savePhotoCaptured } from "@/lib/photoUpload";
+import {
+  WatermarkTemplate,
+  watermarkTemplates,
+} from "@/app/components/WatermarkTemplates";
 
 function CameraContent() {
   const router = useRouter();
@@ -26,8 +30,11 @@ function CameraContent() {
     addWatermarkToImage,
   } = useCamera();
   const [showSettings, setShowSettings] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<WatermarkTemplate>(
+    watermarkTemplates[0],
+  );
 
-  const { timeFormat, gpsEnabled, companyLogo } = useSettings();
+  const { timeFormat, gpsEnabled } = useSettings();
 
   const [addressInfo, setAddressInfo] = useState<any>(null);
   const [currentTime, setCurrentTime] = useState<string>("");
@@ -139,7 +146,10 @@ function CameraContent() {
 
       <TopBar onSettingsClick={() => setShowSettings(true)} />
 
-      <BottomBar onCaptureClick={handleCaptureWithWatermark} />
+      <BottomBar
+        onCaptureClick={handleCaptureWithWatermark}
+        onTemplateChange={(template) => setSelectedTemplate(template)}
+      />
 
       <GridOverlay />
 
@@ -157,8 +167,8 @@ function CameraContent() {
             addressInfo,
             currentTime,
             userName: user?.name || user?.username || "",
-            companyLogo,
             timeFormat,
+            style: selectedTemplate.style,
           }}
         />
       )}

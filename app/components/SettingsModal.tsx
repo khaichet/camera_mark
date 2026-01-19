@@ -9,7 +9,6 @@ export const SettingsModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
 }> = ({ isOpen, onClose }) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [currentTime, setCurrentTime] = useState<string>("");
   const [currentLocation, setCurrentLocation] = useState<{
     latitude: number;
@@ -27,14 +26,8 @@ export const SettingsModal: React.FC<{
   } | null>(null);
   const [loadingAddress, setLoadingAddress] = useState(false);
 
-  const {
-    timeFormat,
-    setTimeFormat,
-    gpsEnabled,
-    setGpsEnabled,
-    companyLogo,
-    setCompanyLogo,
-  } = useSettings();
+  const { timeFormat, setTimeFormat, gpsEnabled, setGpsEnabled } =
+    useSettings();
 
   const { user } = useAuth();
 
@@ -66,7 +59,7 @@ export const SettingsModal: React.FC<{
                 headers: {
                   "Accept-Language": "vi",
                 },
-              }
+              },
             )
               .then((res) => res.json())
               .then((data) => {
@@ -100,24 +93,13 @@ export const SettingsModal: React.FC<{
             setLocationError("Không thể lấy vị trí: " + error.message);
             setCurrentLocation(null);
             setAddressInfo(null);
-          }
+          },
         );
       } else {
         setLocationError("Trình duyệt không hỗ trợ Geolocation");
       }
     }
   }, [gpsEnabled, isOpen]);
-
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setCompanyLogo(event.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   if (!isOpen) return null;
 
@@ -240,36 +222,6 @@ export const SettingsModal: React.FC<{
             <p className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white font-medium">
               {user?.name || user?.username || "Chưa đăng nhập"}
             </p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Logo công ty (Company Logo)
-            </label>
-            <div className="space-y-2">
-              {companyLogo && (
-                <div className="w-full h-24 bg-gray-800 rounded border border-gray-600 flex items-center justify-center p-2">
-                  <img
-                    src={companyLogo}
-                    alt="Company Logo"
-                    className="max-h-full max-w-full object-contain"
-                  />
-                </div>
-              )}
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white hover:bg-gray-700 transition"
-              >
-                Chọn ảnh Logo
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleLogoUpload}
-                className="hidden"
-              />
-            </div>
           </div>
 
           <button

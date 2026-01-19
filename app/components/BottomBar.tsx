@@ -4,10 +4,16 @@ import { useRouter } from "next/navigation";
 import { Camera, Image, Stamp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/app/context/AuthContext";
+import {
+  WatermarkTemplatesModal,
+  WatermarkTemplate,
+  watermarkTemplates,
+} from "./WatermarkTemplates";
 
 interface BottomBarProps {
   onCaptureClick: () => void;
   capturedPhotos?: string[];
+  onTemplateChange?: (template: WatermarkTemplate) => void;
 }
 
 interface Photo {
@@ -21,10 +27,15 @@ interface Photo {
 export const BottomBar: React.FC<BottomBarProps> = ({
   onCaptureClick,
   capturedPhotos = [],
+  onTemplateChange,
 }) => {
   const router = useRouter();
   const { user } = useAuth();
   const [latestPhoto, setLatestPhoto] = useState<Photo | null>(null);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [currentTemplate, setCurrentTemplate] = useState<WatermarkTemplate>(
+    watermarkTemplates[0],
+  );
 
   useEffect(() => {
     if (user?.id) {
@@ -74,11 +85,28 @@ export const BottomBar: React.FC<BottomBarProps> = ({
         </div>
       </button>
 
-      <button className="group flex flex-col items-center gap-2">
-        <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center group-hover:bg-white/20 transition border border-white/10">
-          <Stamp className="w-6 h-6 text-white" />
+      <button
+        className="group flex flex-col items-center gap-2"
+        onClick={() => setShowTemplates(true)}
+      >
+        <div
+          className="w-12 h-12 rounded-full backdrop-blur-md flex items-center justify-center group-hover:bg-white/20 transition border border-white/10 overflow-hidden"
+          style={{ background: currentTemplate.preview }}
+        >
+          <Stamp className="w-6 h-6 text-white drop-shadow-md" />
         </div>
       </button>
+
+      {/* Watermark Templates Modal */}
+      <WatermarkTemplatesModal
+        isOpen={showTemplates}
+        onClose={() => setShowTemplates(false)}
+        currentTemplateId={currentTemplate.id}
+        onSelectTemplate={(template) => {
+          setCurrentTemplate(template);
+          onTemplateChange?.(template);
+        }}
+      />
     </div>
   );
 };
