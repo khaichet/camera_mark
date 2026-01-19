@@ -13,7 +13,6 @@ interface WatermarkConfig {
   } | null;
   currentTime: string;
   userName?: string;
-  companyLogo?: string | null;
   timeFormat: string;
 }
 
@@ -145,59 +144,6 @@ export const drawWatermark = (
     drawWhiteText(ctx, dateString, dateX, dateY - lineHeight / 2, dateFontSize);
     drawWhiteText(ctx, weekdayString, dateX, dateY + lineHeight / 2, dateFontSize);
 
-    if (config.companyLogo) {
-      const logoImg = new Image();
-      logoImg.crossOrigin = "anonymous";
-      
-      const handleLogoLoad = () => {
-        try {
-          const maxLogoWidth = canvas.width * 0.15;
-          const maxLogoHeight = canvas.height * 0.15;
-          let logoWidth = logoImg.width;
-          let logoHeight = logoImg.height;
-
-          const scale = Math.min(
-            maxLogoWidth / logoWidth,
-            maxLogoHeight / logoHeight,
-            1
-          );
-          logoWidth *= scale;
-          logoHeight *= scale;
-
-          const logoX = canvas.width - logoWidth - 20;
-          const logoY = 20;
-
-          ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeight);
-        } catch (e) {
-          console.warn("Failed to draw logo:", e);
-        }
-        resolve();
-      };
-
-      const handleLogoError = () => {
-        console.warn("Failed to load logo");
-        resolve();
-      };
-
-      // Set timeout to prevent hanging if logo takes too long
-      const timeout = setTimeout(() => {
-        logoImg.onload = null;
-        logoImg.onerror = null;
-        console.warn("Logo loading timeout");
-        resolve();
-      }, 3000);
-
-      logoImg.onload = () => {
-        clearTimeout(timeout);
-        handleLogoLoad();
-      };
-      logoImg.onerror = () => {
-        clearTimeout(timeout);
-        handleLogoError();
-      };
-      logoImg.src = config.companyLogo;
-    } else {
-      resolve();
-    }
+    resolve();
   });
 };

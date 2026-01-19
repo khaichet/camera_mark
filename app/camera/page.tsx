@@ -15,7 +15,7 @@ import { savePhotoCaptured } from "@/lib/photoUpload";
 
 function CameraContent() {
   const router = useRouter();
-  const { isAuthenticated, isLoading: authLoading, user } = useAuth();
+  const { isAuthenticated, isLoading: authLoading, user, logout } = useAuth();
   const {
     videoRef,
     canvasRef,
@@ -27,7 +27,7 @@ function CameraContent() {
   } = useCamera();
   const [showSettings, setShowSettings] = useState(false);
 
-  const { timeFormat, gpsEnabled, companyLogo } = useSettings();
+  const { timeFormat, gpsEnabled } = useSettings();
 
   const [addressInfo, setAddressInfo] = useState<any>(null);
   const [currentTime, setCurrentTime] = useState<string>("");
@@ -80,6 +80,11 @@ function CameraContent() {
 
   const handleCaptureWithWatermark = () => {
     capturePhoto();
+  };
+
+  const handleLogout = () => {
+    logout();
+    router.push("/auth/login");
   };
 
   const handleSavePhoto = async (editedImage: string) => {
@@ -137,7 +142,10 @@ function CameraContent() {
         style={{ display: isStreaming ? "none" : "block" }}
       ></div>
 
-      <TopBar onSettingsClick={() => setShowSettings(true)} />
+      <TopBar
+        onSettingsClick={() => setShowSettings(true)}
+        onLogoutClick={handleLogout}
+      />
 
       <BottomBar onCaptureClick={handleCaptureWithWatermark} />
 
@@ -157,7 +165,6 @@ function CameraContent() {
             addressInfo,
             currentTime,
             userName: user?.name || user?.username || "",
-            companyLogo,
             timeFormat,
           }}
         />

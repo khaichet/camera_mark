@@ -32,8 +32,6 @@ export const SettingsModal: React.FC<{
     setTimeFormat,
     gpsEnabled,
     setGpsEnabled,
-    companyLogo,
-    setCompanyLogo,
   } = useSettings();
 
   const { user } = useAuth();
@@ -108,16 +106,7 @@ export const SettingsModal: React.FC<{
     }
   }, [gpsEnabled, isOpen]);
 
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setCompanyLogo(event.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+
 
   if (!isOpen) return null;
 
@@ -242,35 +231,7 @@ export const SettingsModal: React.FC<{
             </p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-2">
-              Logo công ty (Company Logo)
-            </label>
-            <div className="space-y-2">
-              {companyLogo && (
-                <div className="w-full h-24 bg-gray-800 rounded border border-gray-600 flex items-center justify-center p-2">
-                  <img
-                    src={companyLogo}
-                    alt="Company Logo"
-                    className="max-h-full max-w-full object-contain"
-                  />
-                </div>
-              )}
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white hover:bg-gray-700 transition"
-              >
-                Chọn ảnh Logo
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={handleLogoUpload}
-                className="hidden"
-              />
-            </div>
-          </div>
+
 
           <button
             onClick={onClose}

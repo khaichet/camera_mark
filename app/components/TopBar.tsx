@@ -1,12 +1,16 @@
 "use client";
 
-import { Settings, MapPinned, ZapOff } from "lucide-react";
+import { Settings, MapPinned, LogOut } from "lucide-react";
 
 interface TopBarProps {
   onSettingsClick: () => void;
+  onLogoutClick?: () => void;
 }
 
-export const TopBar: React.FC<TopBarProps> = ({ onSettingsClick }) => {
+export const TopBar: React.FC<TopBarProps> = ({
+  onSettingsClick,
+  onLogoutClick,
+}) => {
   return (
     <div className="absolute top-0 left-0 right-0 z-10 p-6 flex justify-between items-start bg-gradient-to-b from-black/60 to-transparent pt-10">
       <button
@@ -22,8 +26,12 @@ export const TopBar: React.FC<TopBarProps> = ({ onSettingsClick }) => {
         </div>
       </button>
 
-      <button className="p-2 rounded-full hover:bg-white/10 transition">
-        <ZapOff className="w-6 h-6 text-white" />
+      <button
+        onClick={onLogoutClick}
+        className="p-2 rounded-full hover:bg-white/10 transition"
+        title="Logout"
+      >
+        <LogOut className="w-6 h-6 text-white" />
       </button>
     </div>
   );
