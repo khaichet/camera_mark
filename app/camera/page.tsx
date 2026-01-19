@@ -97,6 +97,7 @@ function CameraContent() {
       const imageUrl = result.link || result.url;
       alert(`Lưu ảnh thành công!`);
 
+      // Clear captured image only after successful save
       setCapturedImage(null);
     } catch (error) {
       console.error("Lỗi lưu ảnh:", error);
@@ -104,6 +105,7 @@ function CameraContent() {
         "Lỗi lưu ảnh: " +
           (error instanceof Error ? error.message : "Unknown error"),
       );
+      // Don't clear captured image on error so user can retry
     }
   };
 

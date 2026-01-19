@@ -115,7 +115,11 @@ export const CapturePreview: React.FC<CapturePreviewProps> = ({
       </div>
       <div className="flex gap-4 mt-6 flex-wrap justify-center">
         <button
-          onClick={onRetake}
+          onClick={() => {
+            setEditedImage(image);
+            setPreviewWithWatermark(image);
+            onRetake();
+          }}
           disabled={isSaving || isProcessing}
           className="px-6 py-2 bg-gray-500 hover:bg-gray-600 disabled:bg-gray-400 rounded text-white disabled:cursor-not-allowed"
         >
@@ -129,9 +133,13 @@ export const CapturePreview: React.FC<CapturePreviewProps> = ({
           Chỉnh sửa
         </button>
         <button
-          onClick={() => {
+          onClick={async () => {
             setIsSaving(true);
-            onSave(previewWithWatermark).finally(() => setIsSaving(false));
+            try {
+              await onSave(previewWithWatermark);
+            } finally {
+              setIsSaving(false);
+            }
           }}
           disabled={isSaving || isProcessing}
           className="px-6 py-2 bg-green-500 hover:bg-green-600 disabled:bg-green-400 rounded text-white disabled:cursor-not-allowed flex items-center gap-2"
