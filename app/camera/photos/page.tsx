@@ -77,7 +77,7 @@ const AlbumPhoto = () => {
   };
 
   return (
-    <div className="h-screen bg-black flex flex-col overflow-hidden">
+    <div className="fixed inset-0 bg-black flex flex-col">
       <div className="flex items-center gap-4 p-4 pt-6 shrink-0">
         <button
           onClick={() => router.back()}
@@ -109,8 +109,8 @@ const AlbumPhoto = () => {
           <p className="text-gray-400 text-lg">Chưa có ảnh nào</p>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
-          <div className="grid grid-cols-5 md:grid-cols-5 lg:grid-cols-6 gap-2">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-4 pb-4 -webkit-overflow-scrolling-touch">
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
             {photos.map((photo, index) => (
               <div
                 key={photo._id}
