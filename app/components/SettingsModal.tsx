@@ -27,12 +27,8 @@ export const SettingsModal: React.FC<{
   } | null>(null);
   const [loadingAddress, setLoadingAddress] = useState(false);
 
-  const {
-    timeFormat,
-    setTimeFormat,
-    gpsEnabled,
-    setGpsEnabled,
-  } = useSettings();
+  const { timeFormat, setTimeFormat, gpsEnabled, setGpsEnabled } =
+    useSettings();
 
   const { user } = useAuth();
 
@@ -64,7 +60,7 @@ export const SettingsModal: React.FC<{
                 headers: {
                   "Accept-Language": "vi",
                 },
-              }
+              },
             )
               .then((res) => res.json())
               .then((data) => {
@@ -98,15 +94,13 @@ export const SettingsModal: React.FC<{
             setLocationError("Không thể lấy vị trí: " + error.message);
             setCurrentLocation(null);
             setAddressInfo(null);
-          }
+          },
         );
       } else {
         setLocationError("Trình duyệt không hỗ trợ Geolocation");
       }
     }
   }, [gpsEnabled, isOpen]);
-
-
 
   if (!isOpen) return null;
 
@@ -230,8 +224,6 @@ export const SettingsModal: React.FC<{
               {user?.name || user?.username || "Chưa đăng nhập"}
             </p>
           </div>
-
-
 
           <button
             onClick={onClose}

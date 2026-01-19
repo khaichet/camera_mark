@@ -8,7 +8,7 @@ interface SettingsContextType {
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const SettingsProvider: React.FC<{ children: ReactNode }> = ({

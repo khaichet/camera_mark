@@ -2,9 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronLeft, X } from "lucide-react";
+import { ChevronLeft, X, Search } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
-
 interface Photo {
   _id: string;
   fileUrl: string;
@@ -168,7 +167,6 @@ const AlbumPhoto = () => {
             <X size={30} className="text-white" />
           </button>
 
-          {/* Hướng dẫn vuốt */}
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-sm text-center opacity-70">
             <p>← Vuốt để xem ảnh khác →</p>
           </div>
