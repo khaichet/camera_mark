@@ -60,20 +60,16 @@ const AlbumPhoto = () => {
     const swipeThreshold = 50;
     const diff = touchStartX.current - touchEndX.current;
 
-    // Vuốt sang trái (swipe left) - xem ảnh tiếp theo
     if (diff > swipeThreshold && selectedIndex < photos.length - 1) {
       const nextIndex = selectedIndex + 1;
       setSelectedIndex(nextIndex);
       setSelectedPhoto(photos[nextIndex]);
-    }
-    // Vuốt sang phải (swipe right) - xem ảnh trước đó
-    else if (diff < -swipeThreshold) {
+    } else if (diff < -swipeThreshold) {
       if (selectedIndex > 0) {
         const prevIndex = selectedIndex - 1;
         setSelectedIndex(prevIndex);
         setSelectedPhoto(photos[prevIndex]);
       } else {
-        // Không có ảnh trước, trở về camera
         setSelectedPhoto(null);
         router.push("/camera");
       }
@@ -81,8 +77,8 @@ const AlbumPhoto = () => {
   };
 
   return (
-    <div className="min-h-screen bg-black p-4 flex flex-col">
-      <div className="flex items-center gap-4 mb-6 pt-4">
+    <div className="h-screen bg-black flex flex-col overflow-hidden">
+      <div className="flex items-center gap-4 p-4 pt-6 shrink-0">
         <button
           onClick={() => router.back()}
           className="p-2 hover:bg-gray-800 rounded-lg transition"
@@ -93,11 +89,11 @@ const AlbumPhoto = () => {
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex items-center justify-center flex-1">
           <p className="text-gray-400 text-lg">Đang tải ảnh...</p>
         </div>
       ) : error ? (
-        <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex items-center justify-center flex-1">
           <div className="text-center">
             <p className="text-red-400 text-lg mb-4">{error}</p>
             <button
@@ -109,11 +105,11 @@ const AlbumPhoto = () => {
           </div>
         </div>
       ) : photos.length === 0 ? (
-        <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex items-center justify-center flex-1">
           <p className="text-gray-400 text-lg">Chưa có ảnh nào</p>
         </div>
       ) : (
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto px-4 pb-4">
           <div className="grid grid-cols-5 md:grid-cols-5 lg:grid-cols-6 gap-2">
             {photos.map((photo, index) => (
               <div
