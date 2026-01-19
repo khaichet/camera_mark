@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronLeft, X } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
@@ -20,6 +20,9 @@ const AlbumPhoto = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
 
   useEffect(() => {
     if (user?.id) {
@@ -50,6 +53,30 @@ const AlbumPhoto = () => {
       setPhotos([]);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSwipe = () => {
+    const swipeThreshold = 50;
+    const diff = touchStartX.current - touchEndX.current;
+
+    // Vuốt sang trái (swipe left) - xem ảnh tiếp theo
+    if (diff > swipeThreshold && selectedIndex < photos.length - 1) {
+      const nextIndex = selectedIndex + 1;
+      setSelectedIndex(nextIndex);
+      setSelectedPhoto(photos[nextIndex]);
+    }
+    // Vuốt sang phải (swipe right) - xem ảnh trước đó
+    else if (diff < -swipeThreshold) {
+      if (selectedIndex > 0) {
+        const prevIndex = selectedIndex - 1;
+        setSelectedIndex(prevIndex);
+        setSelectedPhoto(photos[prevIndex]);
+      } else {
+        // Không có ảnh trước, trở về camera
+        setSelectedPhoto(null);
+        router.push("/camera");
+      }
     }
   };
 
@@ -88,11 +115,14 @@ const AlbumPhoto = () => {
       ) : (
         <div className="flex-1 overflow-y-auto">
           <div className="grid grid-cols-5 md:grid-cols-5 lg:grid-cols-6 gap-2">
-            {photos.map((photo) => (
+            {photos.map((photo, index) => (
               <div
                 key={photo._id}
                 className="relative group rounded-lg overflow-hidden bg-gray-900 cursor-pointer"
-                onClick={() => setSelectedPhoto(photo)}
+                onClick={() => {
+                  setSelectedPhoto(photo);
+                  setSelectedIndex(index);
+                }}
               >
                 <img
                   src={photo.fileUrl}
@@ -112,7 +142,16 @@ const AlbumPhoto = () => {
       )}
 
       {selectedPhoto && (
-        <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center">
+        <div
+          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
+          onTouchStart={(e) => {
+            touchStartX.current = e.changedTouches[0].screenX;
+          }}
+          onTouchEnd={(e) => {
+            touchEndX.current = e.changedTouches[0].screenX;
+            handleSwipe();
+          }}
+        >
           <img
             src={selectedPhoto.fileUrl}
             alt={selectedPhoto.fileName}
@@ -132,6 +171,11 @@ const AlbumPhoto = () => {
           >
             <X size={30} className="text-white" />
           </button>
+
+          {/* Hướng dẫn vuốt */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-sm text-center opacity-70">
+            <p>← Vuốt để xem ảnh khác →</p>
+          </div>
         </div>
       )}
     </div>
